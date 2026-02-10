@@ -1,10 +1,16 @@
 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, User, Shield, Unlock } from 'lucide-react';
+import { Lock, User as UserIcon, Shield, Unlock } from 'lucide-react';
 import { api } from '../lib/api';
 import { decryptPrivateKey } from '../lib/crypto';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore, User } from '../store/authStore';
+
+interface LoginResponse {
+  user: User;
+  token: string;
+  encrypted_private_key: string;
+}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -23,7 +29,7 @@ export default function Login() {
 
     try {
       // 1. Login API
-      const response = await api.post('/auth/login', {
+      const response = await api.post<LoginResponse>('/auth/login', {
         username,
         password
       });
@@ -81,7 +87,7 @@ export default function Login() {
             <div>
               <label className="block text-sm font-medium text-white/80 mb-1">Username</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <input
                   type="text"
                   required
