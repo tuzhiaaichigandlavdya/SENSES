@@ -1,10 +1,15 @@
 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, User, Shield, Key } from 'lucide-react';
+import { Lock, User as UserIcon, Shield, Key } from 'lucide-react';
 import { api } from '../lib/api';
 import { generateKeyPair, encryptPrivateKey } from '../lib/crypto';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore, User } from '../store/authStore';
+
+interface RegisterResponse {
+  user: User;
+  token: string;
+}
 
 export default function Register() {
   const navigate = useNavigate();
@@ -31,7 +36,7 @@ export default function Register() {
       const encryptedPrivateKey = await encryptPrivateKey(keyPair.privateKey, password);
       
       // 3. Register API
-      const response = await api.post('/auth/register', {
+      const response = await api.post<RegisterResponse>('/auth/register', {
         username,
         display_name: displayName,
         password,
@@ -85,7 +90,7 @@ export default function Register() {
             <div>
               <label className="block text-sm font-medium text-white/80 mb-1">Username</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <input
                   type="text"
                   required
@@ -100,7 +105,7 @@ export default function Register() {
             <div>
               <label className="block text-sm font-medium text-white/80 mb-1">Display Name</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                 <input
                   type="text"
                   required
